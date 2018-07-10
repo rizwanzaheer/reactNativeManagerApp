@@ -12,6 +12,7 @@ import { createStore } from 'redux';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import firebase from 'firebase';
 import reducers from './reducers';
+import LoginForm from './components/LoginForm';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -22,7 +23,7 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
-  componentWillMount = () => {
+  componentWillMount() {
     // Initialize Firebase
     const config = {
       apiKey: "AIzaSyAWemGAy9Nh1COwnOKx14SQFQKKb5QIcqg",
@@ -36,15 +37,11 @@ export default class App extends Component<Props> {
   }
 
   render() {
-    return (
+    return [
       <Provider store={createStore(reducers)}>
-        <View style={styles.container}>
-          <Text style={styles.welcome}>Welcome to React Native!</Text>
-          <Text style={styles.instructions}>To get started, edit App.js</Text>
-          <Text style={styles.instructions}>{instructions}</Text>
-        </View>
+        <LoginForm />
       </Provider>
-    );
+    ];
   }
 }
 
