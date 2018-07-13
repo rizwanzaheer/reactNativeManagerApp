@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
+import { connect } from 'react-redux';
 import firebase from 'firebase';
+import { emailChanged } from '../actions';
 import { Button, Card, CardSection, Input, Spinner } from './common';
 
-export default class LoginForm extends Component {
+class LoginForm extends Component {
   state = { email: '', password: '', err: '', loading: false }
   onButtonPress() {
     const { email, password } = this.state;
@@ -32,7 +34,7 @@ export default class LoginForm extends Component {
     this.setState({ email: '', password: '', err: '', loading: false });
   }
   onEmailChange(text) {
-  
+
   }
   render() {
     const { errTextStyle } = styles;
@@ -43,7 +45,7 @@ export default class LoginForm extends Component {
             value={this.state.text}
             label="Email"
             placeHolder="user@gmail.com"
-            onChangeText={email => this.setState({ email })}
+            onChangeText={this.onEmailChange.bind(this)}
           />
         </CardSection>
         <CardSection>
@@ -73,3 +75,5 @@ const styles = {
     color: 'red'
   }
 }
+
+export default class connect(null, { emailChanged })(LoginForm);
