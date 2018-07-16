@@ -2,21 +2,24 @@ import React, { Component } from 'react';
 import { Text } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { emailChanged } from '../actions';
+import { emailChanged, passwordChanged, loginUser } from '../actions';
 import { Button, Card, CardSection, Input, Spinner } from './common';
 
 class LoginForm extends Component {
   state = { email: '', password: '', err: '', loading: false }
   onButtonPress() {
-    const { email, password } = this.state;
-    this.setState({ err: '', loading: true });
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(this.onLoginSuccess.bind(this))
-      .catch(() => {
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(this.onLoginSuccess.bind(this))
-          .catch(this.onLoginFailed.bind(this));
-      });
+    const { email, password } = this.props;
+    this.props.loginUser({ email, password });
+
+
+    // this.setState({ err: '', loading: true });
+    // firebase.auth().signInWithEmailAndPassword(email, password)
+    //   .then(this.onLoginSuccess.bind(this))
+    //   .catch(() => {
+    //     firebase.auth().createUserWithEmailAndPassword(email, password)
+    //       .then(this.onLoginSuccess.bind(this))
+    //       .catch(this.onLoginFailed.bind(this));
+    //   });
   }
   renderButton() {
     if (this.state.loading) {
@@ -34,33 +37,36 @@ class LoginForm extends Component {
     this.setState({ email: '', password: '', err: '', loading: false });
   }
   onEmailChange(text) {
-
+    this.props.emailChanged(text);
+  }
+  onPasswordChange(text) {
+    this.props.passwordChanged(text);
   }
   render() {
     const { errTextStyle } = styles;
     return (
       <Card>
-        <CardSection>
+        <CardSection key={'11'}>
           <Input
-            value={this.state.text}
+            value={this.props.email}
             label="Email"
             placeHolder="user@gmail.com"
             onChangeText={this.onEmailChange.bind(this)}
           />
         </CardSection>
-        <CardSection>
+        <CardSection key={'12'}>
           <Input
-            value={this.state.password}
+            value={this.props.password}
             label="Password"
             placeHolder="Password"
             secureTextEntry
-            onChangeText={password => this.setState({ password })}
+            onChangeText={this.onPasswordChange.bind(this)}
           />
         </CardSection>
         <Text style={errTextStyle}>
           {this.state.err}
         </Text>
-        <CardSection>
+        <CardSection key={'13'}>
           {this.renderButton()}
         </CardSection>
       </Card>
@@ -76,4 +82,12 @@ const styles = {
   }
 }
 
-export default class connect(null, { emailChanged })(LoginForm);
+
+const maspStateToProps = state => {
+  return {
+    email: state.auth.email,
+    password: state.auth.password
+  }
+}
+
+export default connect(maspStateToProps, { emailChanged, passwordChanged, loginUser })(LoginForm);
