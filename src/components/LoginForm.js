@@ -22,7 +22,7 @@ class LoginForm extends Component {
     //   });
   }
   renderButton() {
-    if (this.state.loading) {
+    if (this.props.loading) {
       return <Spinner size="small" />
     }
     return (
@@ -93,11 +93,13 @@ const styles = {
   }
 }
 
-const maspStateToProps = state => {
+const maspStateToProps = ({ auth }) => {
+  const { email, password, error, loading } = auth;
   return {
-    email: state.auth.email,
-    password: state.auth.password,
-    error: state.auth.error
+    email,
+    password,
+    error,
+    loading
   }
 }
 

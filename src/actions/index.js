@@ -2,6 +2,7 @@ import firbase from 'firebase';
 import {
   EMAIL_CHANGED,
   PASSWORD_CHANGED,
+  LOGIN_USER,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FILED
 } from './types';
@@ -22,6 +23,7 @@ export const passwordChanged = (text) => {
 
 export const loginUser = ({ email, password }) => {
   return (dispatch) => {
+    dispatch({ type: LOGIN_USER });
     firbase.auth().signInWithEmailAndPassword(email, password)
       .then(user => {
         console.log(user);
@@ -30,7 +32,7 @@ export const loginUser = ({ email, password }) => {
       .catch(() => {
         firbase.auth().createUserWithEmailAndPassword(email, password)
           .then(user => loginUserSuccess(dispatch, user))
-          .catch(()=>loginUserFailed(dispatch));
+          .catch(() => loginUserFailed(dispatch));
       });
   }
 }
