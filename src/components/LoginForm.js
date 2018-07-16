@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { emailChanged, passwordChanged, loginUser } from '../actions';
@@ -42,11 +42,24 @@ class LoginForm extends Component {
   onPasswordChange(text) {
     this.props.passwordChanged(text);
   }
+
+  renderError() {
+    if (this.props.error) {
+      return (
+        <View style={{ backgroundColor: 'White' }}>
+          <Text style={styles.errorTextStyle}>
+            {this.props.error}
+          </Text>
+        </View>
+      )
+    }
+  }
+
   render() {
-    const { errTextStyle } = styles;
+    const { errorTextStyle } = styles;
     return (
       <Card>
-        <CardSection key={'11'}>
+        <CardSection>
           <Input
             value={this.props.email}
             label="Email"
@@ -54,7 +67,7 @@ class LoginForm extends Component {
             onChangeText={this.onEmailChange.bind(this)}
           />
         </CardSection>
-        <CardSection key={'12'}>
+        <CardSection>
           <Input
             value={this.props.password}
             label="Password"
@@ -63,10 +76,8 @@ class LoginForm extends Component {
             onChangeText={this.onPasswordChange.bind(this)}
           />
         </CardSection>
-        <Text style={errTextStyle}>
-          {this.state.err}
-        </Text>
-        <CardSection key={'13'}>
+        {this.renderError()}
+        <CardSection>
           {this.renderButton()}
         </CardSection>
       </Card>
@@ -75,18 +86,18 @@ class LoginForm extends Component {
 }
 
 const styles = {
-  errTextStyle: {
+  errorTextStyle: {
     fontSize: 20,
     alignSelf: 'center',
     color: 'red'
   }
 }
 
-
 const maspStateToProps = state => {
   return {
     email: state.auth.email,
-    password: state.auth.password
+    password: state.auth.password,
+    error: state.auth.error
   }
 }
 
