@@ -2,21 +2,24 @@ import React, { Component } from 'react';
 import { Text } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { emailChanged, passwordChanged } from '../actions';
+import { emailChanged, passwordChanged, loginUser } from '../actions';
 import { Button, Card, CardSection, Input, Spinner } from './common';
 
 class LoginForm extends Component {
   state = { email: '', password: '', err: '', loading: false }
   onButtonPress() {
-    const { email, password } = this.state;
-    this.setState({ err: '', loading: true });
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(this.onLoginSuccess.bind(this))
-      .catch(() => {
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(this.onLoginSuccess.bind(this))
-          .catch(this.onLoginFailed.bind(this));
-      });
+    const { email, password } = this.props;
+    this.props.loginUser({ email, password });
+
+
+    // this.setState({ err: '', loading: true });
+    // firebase.auth().signInWithEmailAndPassword(email, password)
+    //   .then(this.onLoginSuccess.bind(this))
+    //   .catch(() => {
+    //     firebase.auth().createUserWithEmailAndPassword(email, password)
+    //       .then(this.onLoginSuccess.bind(this))
+    //       .catch(this.onLoginFailed.bind(this));
+    //   });
   }
   renderButton() {
     if (this.state.loading) {
@@ -36,14 +39,14 @@ class LoginForm extends Component {
   onEmailChange(text) {
     this.props.emailChanged(text);
   }
-  onPasswordChange() {
+  onPasswordChange(text) {
     this.props.passwordChanged(text);
   }
   render() {
     const { errTextStyle } = styles;
     return (
       <Card>
-        <CardSection>
+        <CardSection key={'11'}>
           <Input
             value={this.props.email}
             label="Email"
@@ -51,7 +54,7 @@ class LoginForm extends Component {
             onChangeText={this.onEmailChange.bind(this)}
           />
         </CardSection>
-        <CardSection>
+        <CardSection key={'12'}>
           <Input
             value={this.props.password}
             label="Password"
@@ -63,7 +66,7 @@ class LoginForm extends Component {
         <Text style={errTextStyle}>
           {this.state.err}
         </Text>
-        <CardSection>
+        <CardSection key={'13'}>
           {this.renderButton()}
         </CardSection>
       </Card>
@@ -87,4 +90,4 @@ const maspStateToProps = state => {
   }
 }
 
-export default connect(maspStateToProps, { emailChanged, passwordChanged })(LoginForm);
+export default connect(maspStateToProps, { emailChanged, passwordChanged, loginUser })(LoginForm);
