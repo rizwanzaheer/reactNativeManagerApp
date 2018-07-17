@@ -9,11 +9,12 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import firebase from 'firebase';
 import ReduxThunk from 'redux-thunk';
+import ReduxLogger from 'redux-logger';
 import reducers from './reducers';
-import LoginForm from './components/LoginForm';
+import RouterComponent from './Router';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -38,10 +39,10 @@ export default class App extends Component<Props> {
   }
 
   render() {
-    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk, ReduxLogger));
     return [
       <Provider store={store}>
-        <LoginForm />
+        <RouterComponent />
       </Provider>
     ];
   }

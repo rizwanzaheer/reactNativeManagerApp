@@ -1,5 +1,12 @@
 import firbase from 'firebase';
-import { EMAIL_CHANGED, PASSWORD_CHANGED } from './types';
+import {Actions } from 'react-native-router-flux';
+import {
+  EMAIL_CHANGED,
+  PASSWORD_CHANGED,
+  LOGIN_USER,
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_FILED
+} from './types';
 
 export const emailChanged = (text) => {
   return {
@@ -8,19 +15,28 @@ export const emailChanged = (text) => {
   };
 }
 
-export const loginUser = ({ email, password }) => {
-  return (dispatch) => {
-    firbase.auth().signInWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log(user);
-        dispatch({ type: 'LOGIN_USER_SUCCESS', payload: user });
-      });
-  }
-}
-
 export const passwordChanged = (text) => {
   return {
     payload: text,
     type: PASSWORD_CHANGED
   };
 };
+
+export const loginUser = ({ email, password }) => {
+  return (dispatch) => {
+    dispatch({ type: LOGIN_USER });
+    firbase.auth().signInWithEmailAndPassword(email, password)
+      .then(user => loginUserSuccess(dispatch, user))
+      .catch(() => {
+        firbase.auth().createUserWithEmailAndPassword(email, password)
+          .then(user => loginUserSuccess(dispatch, user))
+          .catch(() => loginUserFailed(dispatch));
+      });
+  }
+}
+
+const loginUserSuccess = (dispatch, user) => {
+  dispatch({ type: LOGIN_USER_SUCCESS, payload: user });
+  Actions.employeeList();
+}
+const loginUserFailed = dispatch => dispatch({ type: LOGIN_USER_FILED });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { emailChanged, passwordChanged, loginUser } from '../actions';
@@ -10,19 +10,9 @@ class LoginForm extends Component {
   onButtonPress() {
     const { email, password } = this.props;
     this.props.loginUser({ email, password });
-
-
-    // this.setState({ err: '', loading: true });
-    // firebase.auth().signInWithEmailAndPassword(email, password)
-    //   .then(this.onLoginSuccess.bind(this))
-    //   .catch(() => {
-    //     firebase.auth().createUserWithEmailAndPassword(email, password)
-    //       .then(this.onLoginSuccess.bind(this))
-    //       .catch(this.onLoginFailed.bind(this));
-    //   });
   }
   renderButton() {
-    if (this.state.loading) {
+    if (this.props.loading) {
       return <Spinner size="small" />
     }
     return (
@@ -30,23 +20,29 @@ class LoginForm extends Component {
         Login
     </Button>);
   }
-  onLoginFailed() {
-    this.setState({ err: 'Authentication failed!', loading: false });
-  }
-  onLoginSuccess() {
-    this.setState({ email: '', password: '', err: '', loading: false });
-  }
   onEmailChange(text) {
     this.props.emailChanged(text);
   }
   onPasswordChange(text) {
     this.props.passwordChanged(text);
   }
+
+  renderError() {
+    if (this.props.error) {
+      return (
+        <View style={{ backgroundColor: 'White' }}>
+          <Text style={styles.errorTextStyle}>
+            {this.props.error}
+          </Text>
+        </View>
+      )
+    }
+  }
+
   render() {
-    const { errTextStyle } = styles;
     return (
       <Card>
-        <CardSection key={'11'}>
+        <CardSection>
           <Input
             value={this.props.email}
             label="Email"
@@ -54,7 +50,7 @@ class LoginForm extends Component {
             onChangeText={this.onEmailChange.bind(this)}
           />
         </CardSection>
-        <CardSection key={'12'}>
+        <CardSection>
           <Input
             value={this.props.password}
             label="Password"
@@ -63,10 +59,8 @@ class LoginForm extends Component {
             onChangeText={this.onPasswordChange.bind(this)}
           />
         </CardSection>
-        <Text style={errTextStyle}>
-          {this.state.err}
-        </Text>
-        <CardSection key={'13'}>
+        {this.renderError()}
+        <CardSection>
           {this.renderButton()}
         </CardSection>
       </Card>
@@ -75,18 +69,20 @@ class LoginForm extends Component {
 }
 
 const styles = {
-  errTextStyle: {
+  errorTextStyle: {
     fontSize: 20,
     alignSelf: 'center',
     color: 'red'
   }
 }
 
-
-const maspStateToProps = state => {
+const maspStateToProps = ({ auth }) => {
+  const { email, password, error, loading } = auth;
   return {
-    email: state.auth.email,
-    password: state.auth.password
+    email,
+    password,
+    error,
+    loading
   }
 }
 
