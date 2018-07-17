@@ -25,10 +25,7 @@ export const loginUser = ({ email, password }) => {
   return (dispatch) => {
     dispatch({ type: LOGIN_USER });
     firbase.auth().signInWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log(user);
-        loginUserSuccess(dispatch, user);
-      })
+      .then(user => loginUserSuccess(dispatch, user))
       .catch(() => {
         firbase.auth().createUserWithEmailAndPassword(email, password)
           .then(user => loginUserSuccess(dispatch, user))
