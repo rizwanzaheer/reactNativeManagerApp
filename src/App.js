@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Text } from 'react-native';
 import firebase from 'firebase';
 import ReduxThunk from 'redux-thunk';
 import ReduxLogger from 'redux-logger';
@@ -30,7 +30,7 @@ export default class App extends Component<Props> {
     const config = {
       apiKey: "AIzaSyAWemGAy9Nh1COwnOKx14SQFQKKb5QIcqg",
       authDomain: "manager-898cf.firebaseapp.com",
-      databaseURL: "https://manager-898cf.firebaseio.com",
+      databaseURL: "https://manag er-898cf.firebaseio.com",
       projectId: "manager-898cf",
       storageBucket: "manager-898cf.appspot.com",
       messagingSenderId: "576331909629"
