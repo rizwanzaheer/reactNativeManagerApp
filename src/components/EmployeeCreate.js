@@ -1,25 +1,45 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Text, Picker } from 'react-native'
+import { employeeUpdate } from '../actions';
+import { Card, CardSection, Input, Button } from './common';
 
-import React, { Component } from 'react'
-import { Card, CardSection, Input, Button } from './common'
 
-export default class EmployyeCreate extends Component {
+class EmployyeCreate extends Component {
   render() {
     return (
       <Card>
         <CardSection>
           <Input
-            lable="Name",
-          placeholder="Rizwan"
-        />
+            lable="Name"
+            placeholder="Rizwan"
+            value={this.props.name}
+            onChangeText={value => this.props.employeeUpdate({ prop: 'name', value })}
+          />
         </CardSection>
         <CardSection>
           <Input
-            lable="Phone",
-          placeholder="03135561765"
-        />
-          </CardSection>
+            lable="Phone"
+            placeholder="03135561765"
+            value={this.props.phone}
+            onChangeText={value => this.props.employeeUpdate({ prop: 'phone', value })}
+          />
+        </CardSection>
         <CardSection>
-
+          <Text style={{styles.}}>Shift</Text>
+          <Picker
+            style={{ flex: 1 }}
+            selectedValue={this.props.shift}
+            onValueChange={value => this.props.employeeUpdate({ prop: 'shift', value })}
+          >
+            <Picker.Item label="Monday" value="Monday" />
+            <Picker.Item label="Tuesday" value="Tuesday" />
+            <Picker.Item label="Wednesday" value="Wednesday" />
+            <Picker.Item label="Thursday" value="Thursday" />
+            <Picker.Item label="Friday" value="Friday" />
+            <Picker.Item label="Saturday" value="Saturday" />
+            <Picker.Item label="Sunday" value="Sunday" />
+          </Picker>
         </CardSection>
         <CardSection>
           <Button>Create</Button>
@@ -28,3 +48,17 @@ export default class EmployyeCreate extends Component {
     )
   }
 }
+
+const styles = {
+  pickTextStyle: {
+    fontSize: 18,
+    paddingLeft: 20,
+  }
+}
+const mapStateToProps = state => {
+  const { name, phone, shift } = state.employeeForm;
+
+  return { name, phone, shift };
+}
+
+export default connect(mapStateToProps, { employeeUpdate })(EmployyeCreate);
